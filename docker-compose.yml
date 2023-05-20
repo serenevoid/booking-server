@@ -1,0 +1,13 @@
+version: '3.8'
+services:
+  db:
+    build: ./db
+    container_name: postgres
+    ports: 
+      - "5432:6666"
+    environment:
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=pass
+      - POSTGRES_DB=booking
+    volumes:
+      - ./data:/data
