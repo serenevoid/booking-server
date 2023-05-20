@@ -3,4 +3,4 @@ FROM postgres:alpine
 ADD scripts/init.sql /docker-entrypoint-initdb.d/
 ADD scripts/load.sql /docker-entrypoint-initdb.d/
 
-EXPOSE 6666
+EXPOSE 5432
