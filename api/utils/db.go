@@ -10,11 +10,9 @@ import (
 )
 
 const (
-	// HOST              = "db"
-	HOST = "/var/run/postgresql"
-	PORT = "5432"
-	// POSTGRES_USER     = "user"
-	POSTGRES_USER     = "void"
+	HOST              = "db"
+	PORT              = "5432"
+	POSTGRES_USER     = "user"
 	POSTGRES_PASSWORD = "pass"
 	POSTGRES_DB       = "booking"
 )
@@ -26,8 +24,7 @@ func init() {
 }
 
 func ConnectDB() {
-	//connectionString := fmt.Sprintf("user=%v password=%v host=%v port=%v dbname=%v sslmode=disable", POSTGRES_USER, POSTGRES_PASSWORD, HOST, PORT, POSTGRES_DB)
-	connectionString := fmt.Sprintf("user=%v host=%v port=%v dbname=%v sslmode=disable", POSTGRES_USER, HOST, PORT, POSTGRES_DB)
+	connectionString := fmt.Sprintf("user=%v password=%v host=%v port=%v dbname=%v sslmode=disable", POSTGRES_USER, POSTGRES_PASSWORD, HOST, PORT, POSTGRES_DB)
 	var err error
 	DB, err = sql.Open("postgres", connectionString)
 	if err != nil {
@@ -129,7 +126,7 @@ func GetPrice(class string) string {
 	fillRatio := 10 * booked / total
 
 	if fillRatio < 4 {
-		if string(Price.MinPrice) != "₹0.00" {
+		if string(Price.MinPrice) != "$0.00" {
 			return string(Price.MinPrice)
 		} else {
 			return string(Price.NormalPrice)
@@ -137,7 +134,7 @@ func GetPrice(class string) string {
 	} else if fillRatio <= 6 {
 		return string(Price.NormalPrice)
 	} else {
-		if string(Price.MaxPrice) != "₹0.00" {
+		if string(Price.MaxPrice) != "$0.00" {
 			return string(Price.MaxPrice)
 		} else {
 			return string(Price.NormalPrice)
@@ -182,7 +179,7 @@ func BookSeats(payload models.BookingPayload) models.BookingReceipt {
 
 func GetAllBookings(phone string) models.BookingHistory {
 	var data models.BookingHistory
-    var bookingIDs []int
+	var bookingIDs []int
 	rows, err := DB.Query(fmt.Sprintf("SELECT booking_id FROM booking WHERE phone = '%s';", phone))
 	if err != nil {
 		log.Panic(err)
@@ -199,7 +196,7 @@ func GetAllBookings(phone string) models.BookingHistory {
 	}
 
 	for _, bookingID := range bookingIDs {
-        var bill models.BookingDetails
+		var bill models.BookingDetails
 		query := fmt.Sprintf(`SELECT receipt.seat_identifier, receipt.price, seats.seat_class 
         FROM receipt JOIN seats ON receipt.seat_identifier = seats.seat_identifier 
         WHERE booking_id = %d ORDER BY receipt.booking_id;`, bookingID)
@@ -217,6 +214,7 @@ func GetAllBookings(phone string) models.BookingHistory {
 			}
 			bill.Seats = append(bill.Seats, seat)
 		}
+        bill.BookingID = bookingID
 		data.Bookings = append(data.Bookings, bill)
 	}
 

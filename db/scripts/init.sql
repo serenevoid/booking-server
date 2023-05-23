@@ -13,19 +13,15 @@ CREATE TABLE seats (
     FOREIGN KEY (seat_class) REFERENCES pricing(seat_class)
 );
 
-CREATE TABLE receipt (
+CREATE TABLE booking (
     booking_id SERIAL PRIMARY KEY,
-    phone VARCHAR(12) NOT NULL,
-    price MONEY NOT NULL,
+    name VARCHAR(20) NOT NULL,
+    phone VARCHAR(20) NOT NULL
 );
 
-CREATE TABLE booking (
-    id SERIAL PRIMARY KEY,
-    seat_identifier VARCHAR(12) UNIQUE NOT NULL,
-    booking_id INT NOT NULL,
-    name VARCHAR(20) NOT NULL,
-    phone VARCHAR(12) NOT NULL,
+CREATE TABLE receipt (
+    booking_id INT REFERENCES booking(booking_id),
+    seat_identifier VARCHAR(12) REFERENCES seats(seat_identifier),
     price MONEY NOT NULL,
-    FOREIGN KEY (seat_identifier) REFERENCES seats(seat_identifier)
-    FOREIGN KEY (booking_id) REFERENCES receipt(booking_id)
+    PRIMARY KEY (booking_id, seat_identifier)
 );
