@@ -1,8 +1,15 @@
 version: '3.8'
 services:
+  api:
+    build: ./
+    container_name: api
+    ports: 
+      - "8080:8080"
+    depends_on:
+      - db
   db:
     build: ./db
-    container_name: postgres
+    container_name: db
     ports: 
       - "5432:5432"
     environment:
