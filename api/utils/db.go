@@ -2,6 +2,7 @@ package utils
 
 import (
 	"booking-server/api/models"
+	"booking-server/api/services"
 	"database/sql"
 	"fmt"
 	"log"
@@ -172,6 +173,11 @@ func BookSeats(payload models.BookingPayload) models.BookingReceipt {
 	bill := models.BookingReceipt{
 		BookingID:   id,
 		TotalAmount: string(price),
+	}
+
+    err = services.SendNotification(fmt.Sprint(id), string(price), payload.PhoneNumber)
+	if err != nil {
+		log.Panic(err)
 	}
 
 	return bill
